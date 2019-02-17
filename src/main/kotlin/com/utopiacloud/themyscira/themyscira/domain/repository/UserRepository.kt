@@ -1,5 +1,6 @@
-package com.utopiacloud.themyscira.themyscira
+package com.utopiacloud.themyscira.themyscira.domain.repository
 
+import com.utopiacloud.themyscira.themyscira.domain.entity.User
 import org.springframework.data.repository.CrudRepository
 
 

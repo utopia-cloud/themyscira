@@ -1,4 +1,4 @@
-package com.utopiacloud.themyscira.themyscira
+package com.utopiacloud.themyscira.themyscira.domain.entity
 
 import javax.persistence.*
 

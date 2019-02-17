@@ -1,5 +1,7 @@
-package com.utopiacloud.themyscira.themyscira
+package com.utopiacloud.themyscira.themyscira.controller
 
+import com.utopiacloud.themyscira.themyscira.domain.repository.UserRepository
+import com.utopiacloud.themyscira.themyscira.domain.entity.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
