@@ -22,7 +22,7 @@ constructor(
         }
         log.info("!!! JOB FINISHED! Time to verify the results")
 
-        jdbcTemplate.query("SELECT first_name, last_name FROM people") { rs, _ ->
+        jdbcTemplate.query("SELECT first_name, last_name FROM trial_people") { rs, _ ->
             Person(
                     firstName = rs.getString(1),
                     lastName = rs.getString(2)
