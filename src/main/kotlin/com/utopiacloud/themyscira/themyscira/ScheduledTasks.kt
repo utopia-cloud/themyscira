@@ -1,5 +1,6 @@
 package com.utopiacloud.themyscira.themyscira
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -9,7 +10,7 @@ import java.util.*
 
 @Component
 class ScheduledTasks {
-    val log = LoggerFactory.getLogger(ScheduledTasks::class.java)
+    val log: Logger = LoggerFactory.getLogger(ScheduledTasks::class.java)
 
     val dateFormat = SimpleDateFormat("HH:mm:ss")
 
