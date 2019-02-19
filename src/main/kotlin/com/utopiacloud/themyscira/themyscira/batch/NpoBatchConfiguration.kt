@@ -17,6 +17,7 @@ import org.springframework.batch.item.ItemWriter
 import org.springframework.batch.item.file.FlatFileItemReader
 import org.springframework.batch.item.file.LineMapper
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder
+import org.springframework.batch.item.file.mapping.DefaultLineMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -36,11 +37,11 @@ class NpoBatchConfiguration {
     lateinit var npoPortalService: NpoPortalService
 
     @Bean
-    fun downloadAndImportCorporateDataJob(downloadZipStep: Step, readCsvStep: Step): Job {
+    fun downloadAndImportCorporateDataJob(downloadZipCorporateStep: Step, readCsvCorporateStep: Step): Job {
         return jobBuilderFactory.get("downloadAndImportCorporateDataJob")
                 .incrementer(RunIdIncrementer())
-                .start(downloadZipStep)
-                .start(readCsvStep)
+                .start(downloadZipCorporateStep)
+                .start(readCsvCorporateStep)
                 .build()
     }
 
@@ -76,7 +77,8 @@ class NpoBatchConfiguration {
                 .name("corporateCsvReader")
                 .resource(FileSystemResource("downloads/000_CorporateInputData_20190218.csv"))
                 .encoding("Shift_JIS")
-                .lineMapper(PassThroughLineMapper())
+                .lineMapper(DefaultLineMapper())
+//                .lineMapper(PassThroughLineMapper())
 //                .delimited()
 //                .names(arrayOf("firstName", "lastName"))
 //                .fieldSetMapper(object : BeanWrapperFieldSetMapper<String>() {
