@@ -1,4 +1,4 @@
-package com.utopiacloud.themyscira.themyscira.interfaces
+package com.utopiacloud.themyscira.themyscira.interfaces.web
 
 import org.springframework.web.client.RestTemplate
 

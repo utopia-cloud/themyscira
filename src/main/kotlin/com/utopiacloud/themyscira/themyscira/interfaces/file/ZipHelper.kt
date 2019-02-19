@@ -1,4 +1,4 @@
-package com.utopiacloud.themyscira.themyscira.helper
+package com.utopiacloud.themyscira.themyscira.interfaces.file
 
 import java.io.*
 import java.util.zip.ZipEntry
