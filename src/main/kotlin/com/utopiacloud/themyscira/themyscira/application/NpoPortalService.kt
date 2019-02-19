@@ -11,13 +11,13 @@ class NpoPortalService {
 
     private val zipHelper = ZipHelper
 
-    fun downloadZipHoujin() {
-        val byteArray: ByteArray = npoPortalRestClient.getZipHoujin()!!
+    fun downloadZipCorporate() {
+        val byteArray: ByteArray = npoPortalRestClient.getZipCorporate()!!
         zipHelper.unzip(byteArray, "downloads")
     }
 
-    fun downloadZipNpo() {
-        val byteArray: ByteArray = npoPortalRestClient.getZipHoujin()!!
+    fun downloadZipAdministrative() {
+        val byteArray: ByteArray = npoPortalRestClient.getZipAdministrative()!!
         zipHelper.unzip(byteArray, "downloads")
     }
 }

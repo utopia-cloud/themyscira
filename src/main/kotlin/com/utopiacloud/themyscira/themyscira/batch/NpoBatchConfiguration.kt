@@ -36,8 +36,8 @@ class NpoBatchConfiguration {
     lateinit var npoPortalService: NpoPortalService
 
     @Bean
-    fun downloadAndImportNpoDataJob(downloadZipStep: Step, readCsvStep: Step): Job {
-        return jobBuilderFactory.get("downloadAndImportNpoDataJob")
+    fun downloadAndImportCorporateDataJob(downloadZipStep: Step, readCsvStep: Step): Job {
+        return jobBuilderFactory.get("downloadAndImportCorporateDataJob")
                 .incrementer(RunIdIncrementer())
                 .start(downloadZipStep)
                 .start(readCsvStep)
@@ -45,24 +45,24 @@ class NpoBatchConfiguration {
     }
 
     @Bean
-    fun downloadZipStep(downloadZipTasklet: Tasklet): Step {
+    fun downloadZipCorporateStep(downloadZipTasklet: Tasklet): Step {
         return stepBuilderFactory
-                .get("downloadZipStep")
+                .get("downloadZipCorporateStep")
                 .tasklet(downloadZipTasklet)
                 .build()
     }
 
     @Bean
-    fun downloadZipTasklet(): MethodInvokingTaskletAdapter {
+    fun downloadZipCorporateTasklet(): MethodInvokingTaskletAdapter {
         val tasklet = MethodInvokingTaskletAdapter()
         tasklet.setTargetObject(npoPortalService)
-        tasklet.setTargetMethod("downloadZipNpo")
+        tasklet.setTargetMethod("downloadZipAdministrative")
         return tasklet
     }
 
     @Bean
-    fun readCsvStep(corporateCsvWriter: ConsoleItemWriter<String>): Step {
-        return stepBuilderFactory.get("readCsvStep")
+    fun readCsvCorporateStep(corporateCsvWriter: ConsoleItemWriter<String>): Step {
+        return stepBuilderFactory.get("readCsvCorporateStep")
                 .chunk<String, String>(10)
                 .reader(corporateCsvReader())
                 .processor(corporateItemProcessor())

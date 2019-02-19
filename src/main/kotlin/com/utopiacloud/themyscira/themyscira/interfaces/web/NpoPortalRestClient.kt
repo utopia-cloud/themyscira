@@ -11,11 +11,11 @@ class NpoPortalRestClient {
         return restTemplate.getForObject("$baseUrl$uri", ByteArray::class.java)
     }
 
-    fun getZipGyousei(): ByteArray? {
+    fun getZipAdministrative(): ByteArray? {
         return this.getZip(uri = "/download/zip/gyousei_000.zip")
     }
 
-    fun getZipHoujin(): ByteArray? {
+    fun getZipCorporate(): ByteArray? {
         return this.getZip(uri = "/download/zip/houjin_000.zip")
     }
 }
