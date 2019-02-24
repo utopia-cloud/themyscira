@@ -104,7 +104,7 @@ class RawAdministrativeInput(
         /** 法人情報URL **/
         var url: String? = null,
         /** 法人番号 **/
-        var urlcorporateNumber: String? = null
+        var corporateNumber: String? = null
 ) {
     companion object {
         val csvHeader = Arrays.stream(RawAdministrativeInput::class.java.declaredFields)
