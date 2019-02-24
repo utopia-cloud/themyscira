@@ -14,6 +14,8 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer
 import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy
 import org.springframework.batch.core.step.tasklet.MethodInvokingTaskletAdapter
 import org.springframework.batch.core.step.tasklet.Tasklet
+import org.springframework.batch.item.database.JpaItemWriter
+import org.springframework.batch.item.database.builder.JpaItemWriterBuilder
 import org.springframework.batch.item.file.FlatFileItemReader
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper
@@ -22,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.FileSystemResource
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 
 @Configuration
@@ -32,6 +36,9 @@ class CorporateInputConfiguration {
 
     @Autowired
     lateinit var stepBuilderFactory: StepBuilderFactory
+
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
 
     @Autowired
     lateinit var npoPortalService: NpoPortalService
@@ -61,13 +68,14 @@ class CorporateInputConfiguration {
         val tasklet = MethodInvokingTaskletAdapter()
         tasklet.setTargetObject(npoPortalService)
         tasklet.setTargetMethod("downloadZipCorporate")
+        tasklet.setArguments(arrayOf("CorporateInputData.csv"))
         return tasklet
     }
 
     @Bean
     fun readCsvCorporateStep(
             rawCorporateInputReadListener: RawCorporateInputReadListener,
-            corporateCsvWriter: ConsoleItemWriter<RawCorporateInput>
+            corporateCsvWriter: JpaItemWriter<RawCorporateInput>
     ): Step {
         return stepBuilderFactory.get("readCsvCorporateStep")
                 .chunk<RawCorporateInput, RawCorporateInput>(10)
@@ -84,7 +92,7 @@ class CorporateInputConfiguration {
     fun corporateCsvReader(): FlatFileItemReader<RawCorporateInput> {
         return FlatFileItemReaderBuilder<RawCorporateInput>()
                 .name("corporateCsvReader")
-                .resource(FileSystemResource("downloads/000_CorporateInputData_20190220.csv"))
+                .resource(FileSystemResource("downloads/CorporateInputData.csv"))
                 .encoding("Shift_JIS")
                 .linesToSkip(1)
                 .recordSeparatorPolicy(DefaultRecordSeparatorPolicy())
@@ -104,8 +112,10 @@ class CorporateInputConfiguration {
     }
 
     @Bean
-    fun corporateCsvWriter(): ConsoleItemWriter<RawCorporateInput> {
-        return ConsoleItemWriter()
+    fun corporateCsvWriter(): JpaItemWriter<RawCorporateInput> {
+        return JpaItemWriterBuilder<RawCorporateInput>()
+                .entityManagerFactory(entityManager.entityManagerFactory)
+                .build()
     }
 }
 
