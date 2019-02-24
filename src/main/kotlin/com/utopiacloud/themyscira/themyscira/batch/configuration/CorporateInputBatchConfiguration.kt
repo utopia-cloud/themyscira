@@ -1,10 +1,9 @@
 package com.utopiacloud.themyscira.themyscira.batch.configuration
 
 import com.utopiacloud.themyscira.themyscira.application.NpoPortalService
-import com.utopiacloud.themyscira.themyscira.batch.item.file.mapping.RawCorporateInputFieldSetMapper
-import com.utopiacloud.themyscira.themyscira.batch.listener.RawCorporateInputReadListener
 import com.utopiacloud.themyscira.themyscira.batch.item.processor.CorporateItemProcessor
 import com.utopiacloud.themyscira.themyscira.batch.item.writer.ConsoleItemWriter
+import com.utopiacloud.themyscira.themyscira.batch.listener.RawCorporateInputReadListener
 import com.utopiacloud.themyscira.themyscira.domain.entity.RawCorporateInput
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
@@ -17,6 +16,7 @@ import org.springframework.batch.core.step.tasklet.MethodInvokingTaskletAdapter
 import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.item.file.FlatFileItemReader
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -88,11 +88,11 @@ class CorporateInputConfiguration {
                 .linesToSkip(1)
                 .delimited()
                 .names(RawCorporateInput.csvHeader)
-                .fieldSetMapper(RawCorporateInputFieldSetMapper())
-//                    init {
-//                        setTargetType(RawCorporateInput::class.java)
-//                    }
-//                })
+                .fieldSetMapper(object : BeanWrapperFieldSetMapper<RawCorporateInput>() {
+                    init {
+                        setTargetType(RawCorporateInput::class.java)
+                    }
+                })
                 .build()
     }
 

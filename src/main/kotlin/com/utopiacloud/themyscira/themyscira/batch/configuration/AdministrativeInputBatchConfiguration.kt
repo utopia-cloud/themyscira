@@ -17,6 +17,7 @@ import org.springframework.batch.core.step.tasklet.MethodInvokingTaskletAdapter
 import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.item.file.FlatFileItemReader
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -88,12 +89,11 @@ class AdministrativeInputBatchConfiguration{
                 .linesToSkip(1)
                 .delimited()
                 .names(RawAdministrativeInput.csvHeader)
-                .fieldSetMapper(RawAdministrativeInputFieldSetMapper())
-//                .fieldSetMapper(object : BeanWrapperFieldSetMapper<RawAdministrativeInput>() {
-//                    init {
-//                        setTargetType(RawAdministrativeInput::class.java)
-//                    }
-//                })
+                .fieldSetMapper(object : BeanWrapperFieldSetMapper<RawAdministrativeInput>() {
+                    init {
+                        setTargetType(RawAdministrativeInput::class.java)
+                    }
+                })
                 .build()
     }
 
