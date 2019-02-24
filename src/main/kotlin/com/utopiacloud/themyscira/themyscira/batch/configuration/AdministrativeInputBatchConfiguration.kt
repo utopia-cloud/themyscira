@@ -68,6 +68,7 @@ class AdministrativeInputBatchConfiguration {
         val tasklet = MethodInvokingTaskletAdapter()
         tasklet.setTargetObject(npoPortalService)
         tasklet.setTargetMethod("downloadZipAdministrative")
+        tasklet.setArguments(arrayOf("AdministrativeInputData.csv"))
         return tasklet
     }
 
@@ -93,7 +94,7 @@ class AdministrativeInputBatchConfiguration {
     fun administrativeCsvReader(): FlatFileItemReader<RawAdministrativeInput> {
         return FlatFileItemReaderBuilder<RawAdministrativeInput>()
                 .name("administrativeCsvReader")
-                .resource(FileSystemResource("downloads/000_AdministrativeInputData_20190223.csv"))
+                .resource(FileSystemResource("downloads/AdministrativeInputData.csv"))
                 .encoding("Shift_JIS")
                 .linesToSkip(1)
                 .recordSeparatorPolicy(DefaultRecordSeparatorPolicy())
