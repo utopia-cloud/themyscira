@@ -14,7 +14,7 @@ class ScheduledTasks {
 
     val dateFormat = SimpleDateFormat("HH:mm:ss")
 
-    @Scheduled(fixedRate = 5000) //which specifies the interval between method invocations measured from the start time of each invocation.
+//    @Scheduled(fixedRate = 5000) //which specifies the interval between method invocations measured from the start time of each invocation.
     fun reportCurrentTime() {
         log.info("The time is now {}", dateFormat.format(Date()))
     }

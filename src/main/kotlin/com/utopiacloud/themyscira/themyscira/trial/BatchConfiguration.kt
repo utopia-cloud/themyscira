@@ -61,7 +61,7 @@ class BatchConfiguration {
     // end::readerwriterprocessor[]
 
     // tag::jobstep[]
-    @Bean
+//    @Bean
     fun importUserJob(listener: JobCompletionNotificationListener, step1: Step): Job {
         return jobBuilderFactory.get("importUserJob")
                 .incrementer(RunIdIncrementer())
