@@ -1,4 +1,4 @@
-package com.utopiacloud.themyscira.themyscira.batch.item.file
+package com.utopiacloud.themyscira.themyscira.batch.item.file.mapping
 
 import com.utopiacloud.themyscira.themyscira.ScheduledTasks
 import com.utopiacloud.themyscira.themyscira.domain.entity.RawCorporateInput
