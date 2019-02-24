@@ -1,23 +1,22 @@
-package com.utopiacloud.themyscira.themyscira.batch
+package com.utopiacloud.themyscira.themyscira.batch.configuration
 
-import com.utopiacloud.themyscira.themyscira.ScheduledTasks
 import com.utopiacloud.themyscira.themyscira.application.NpoPortalService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import com.utopiacloud.themyscira.themyscira.batch.item.file.mapping.RawCorporateInputFieldSetMapper
+import com.utopiacloud.themyscira.themyscira.batch.listener.RawCorporateInputReadListener
+import com.utopiacloud.themyscira.themyscira.batch.item.processor.CorporateItemProcessor
+import com.utopiacloud.themyscira.themyscira.batch.item.writer.ConsoleItemWriter
+import com.utopiacloud.themyscira.themyscira.domain.entity.RawCorporateInput
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
 import org.springframework.batch.core.launch.support.RunIdIncrementer
+import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy
 import org.springframework.batch.core.step.tasklet.MethodInvokingTaskletAdapter
 import org.springframework.batch.core.step.tasklet.Tasklet
-import org.springframework.batch.item.ItemProcessor
-import org.springframework.batch.item.ItemWriter
 import org.springframework.batch.item.file.FlatFileItemReader
-import org.springframework.batch.item.file.LineMapper
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder
-import org.springframework.batch.item.file.mapping.DefaultLineMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,7 +25,7 @@ import org.springframework.core.io.FileSystemResource
 
 @Configuration
 @EnableBatchProcessing
-class NpoBatchConfiguration {
+class CorporateInputConfiguration {
     @Autowired
     lateinit var jobBuilderFactory: JobBuilderFactory
 
@@ -37,19 +36,22 @@ class NpoBatchConfiguration {
     lateinit var npoPortalService: NpoPortalService
 
     @Bean
-    fun downloadAndImportCorporateDataJob(downloadZipCorporateStep: Step, readCsvCorporateStep: Step): Job {
+    fun downloadAndImportCorporateDataJob(
+            downloadZipCorporateStep: Step,
+            readCsvCorporateStep: Step
+    ): Job {
         return jobBuilderFactory.get("downloadAndImportCorporateDataJob")
                 .incrementer(RunIdIncrementer())
                 .start(downloadZipCorporateStep)
-                .start(readCsvCorporateStep)
+                .next(readCsvCorporateStep)
                 .build()
     }
 
     @Bean
-    fun downloadZipCorporateStep(downloadZipTasklet: Tasklet): Step {
+    fun downloadZipCorporateStep(downloadZipCorporateTasklet: Tasklet): Step {
         return stepBuilderFactory
                 .get("downloadZipCorporateStep")
-                .tasklet(downloadZipTasklet)
+                .tasklet(downloadZipCorporateTasklet)
                 .build()
     }
 
@@ -57,33 +59,38 @@ class NpoBatchConfiguration {
     fun downloadZipCorporateTasklet(): MethodInvokingTaskletAdapter {
         val tasklet = MethodInvokingTaskletAdapter()
         tasklet.setTargetObject(npoPortalService)
-        tasklet.setTargetMethod("downloadZipAdministrative")
+        tasklet.setTargetMethod("downloadZipCorporate")
         return tasklet
     }
 
     @Bean
-    fun readCsvCorporateStep(corporateCsvWriter: ConsoleItemWriter<String>): Step {
+    fun readCsvCorporateStep(
+            rawCorporateInputReadListener: RawCorporateInputReadListener,
+            corporateCsvWriter: ConsoleItemWriter<RawCorporateInput>
+    ): Step {
         return stepBuilderFactory.get("readCsvCorporateStep")
-                .chunk<String, String>(10)
+                .chunk<RawCorporateInput, RawCorporateInput>(10)
+                .faultTolerant()
+                .skipPolicy(AlwaysSkipItemSkipPolicy())
                 .reader(corporateCsvReader())
+                .listener(rawCorporateInputReadListener)
                 .processor(corporateItemProcessor())
                 .writer(corporateCsvWriter)
                 .build()
     }
 
     @Bean
-    fun corporateCsvReader(): FlatFileItemReader<String> {
-        return FlatFileItemReaderBuilder<String>()
+    fun corporateCsvReader(): FlatFileItemReader<RawCorporateInput> {
+        return FlatFileItemReaderBuilder<RawCorporateInput>()
                 .name("corporateCsvReader")
-                .resource(FileSystemResource("downloads/000_CorporateInputData_20190218.csv"))
+                .resource(FileSystemResource("downloads/000_CorporateInputData_20190220.csv"))
                 .encoding("Shift_JIS")
-                .lineMapper(DefaultLineMapper())
-//                .lineMapper(PassThroughLineMapper())
-//                .delimited()
-//                .names(arrayOf("firstName", "lastName"))
-//                .fieldSetMapper(object : BeanWrapperFieldSetMapper<String>() {
+                .linesToSkip(1)
+                .delimited()
+                .names(RawCorporateInput.csvHeader)
+                .fieldSetMapper(RawCorporateInputFieldSetMapper())
 //                    init {
-//                        setTargetType(String::class.java)
+//                        setTargetType(RawCorporateInput::class.java)
 //                    }
 //                })
                 .build()
@@ -95,35 +102,8 @@ class NpoBatchConfiguration {
     }
 
     @Bean
-    fun corporateCsvWriter(): ConsoleItemWriter<String> {
+    fun corporateCsvWriter(): ConsoleItemWriter<RawCorporateInput> {
         return ConsoleItemWriter()
     }
 }
 
-class PassThroughLineMapper : LineMapper<String> {
-    private val log: Logger = LoggerFactory.getLogger(ScheduledTasks::class.java)
-    override fun mapLine(line: String, lineNumber: Int): String {
-        log.info("PassThroughLineMapper")
-        log.info(line)
-        return line
-    }
-}
-
-class ConsoleItemWriter<T> : ItemWriter<T> {
-    private val log: Logger = LoggerFactory.getLogger(ScheduledTasks::class.java)
-
-    override fun write(items: MutableList<out T>) {
-        log.info("ConsoleItemWriter start")
-        items.forEach { item -> log.info(item.toString()) }
-        log.info("ConsoleItemWriter end")
-    }
-}
-
-class CorporateItemProcessor : ItemProcessor<String, String> {
-    private val log: Logger = LoggerFactory.getLogger(ScheduledTasks::class.java)
-    override fun process(item: String): String? {
-        log.info("CorporateItemProcessor")
-        log.info(item)
-        return item
-    }
-}
