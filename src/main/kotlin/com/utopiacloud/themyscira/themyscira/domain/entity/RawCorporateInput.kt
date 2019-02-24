@@ -1,6 +1,8 @@
 package com.utopiacloud.themyscira.themyscira.domain.entity
 
+import java.lang.reflect.Field
 import java.util.*
+import java.util.stream.Collectors
 import javax.persistence.*
 
 
@@ -15,194 +17,211 @@ class RawCorporateInput(
         var id: Long? = 0,
 
         /** 法人名称 **/
-        var name: String,
+        var name: String? = null,
         /** 組織情報（公開用電話番号） **/
-        var tel: String,
+        var tel: String? = null,
         /** 組織情報（ファックス） **/
-        var fax: String,
+        var fax: String? = null,
         /** 組織情報（ホームページ） **/
-        var homepage: String,
+        var homepage: String? = null,
         /** 組織情報（メールアドレス） **/
-        var email: String,
+        var email: String? = null,
         /** 組織情報（常勤職員数） **/
-        var fullTimeMembers: String,
+        var fullTimeMembers: String? = null,
         /** 組織情報（事業活動の内容） **/
-        var activitySummary: String,
+        var activitySummary: String? = null,
 
 
         /** 事業年度（直近の決算） **/
-        var currentBusinessYear: Int,
+        var currentBusinessYear: Int? = null,
         /** 活動計画書 経常収益計-特定非営利活動に係る事業 **/
-        var ordinalyIncomeMain: Long,
+        var ordinaryIncomeMain: Long? = null,
         /** 活動計画書 経常収益計-その他の事業 **/
-        var ordinalyIncomeOthers: Long,
+        var ordinaryIncomeOthers: Long? = null,
         /** 活動計画書 経常収益計-合計 **/
-        var ordinalyIncomeTotal: Long,
+        var ordinaryIncomeTotal: Long? = null,
         /** 活動計画書 経常収益計（受取会費）-特定非営利活動に係る事業 **/
-        var ordinalyIncomeMembershipFeeMain: Long,
+        var ordinaryIncomeMembershipFeeMain: Long? = null,
         /** 活動計画書 経常収益計（受取会費）-その他の事業 **/
-        var ordinalyIncomeMembershipFeeOthers: Long,
+        var ordinaryIncomeMembershipFeeOthers: Long? = null,
         /** 活動計画書 経常収益計（受取会費）-合計 **/
-        var ordinalyIncomeMembershipFeeTotal: Long,
+        var ordinaryIncomeMembershipFeeTotal: Long? = null,
         /** 活動計画書 経常収益計（受取寄附金）-特定非営利活動に係る事業 **/
-        var ordinalyIncomeCotributionMain: Long,
+        var ordinaryIncomeCotributionMain: Long? = null,
         /** 活動計画書 経常収益計（受取寄附金）-その他の事業 **/
-        var ordinalyIncomeCotributionOthers: Long,
+        var ordinaryIncomeCotributionOthers: Long? = null,
         /** 活動計画書 経常収益計（受取寄附金）-合計 **/
-        var ordinalyIncomeCotributionTotal: Long,
+        var ordinaryIncomeCotributionTotal: Long? = null,
         /** 活動計画書 経常収益計（受取助成金等）-特定非営利活動に係る事業 **/
-        var ordinalyIncomeSubsidyMain: Long,
+        var ordinaryIncomeSubsidyMain: Long? = null,
         /** 活動計画書 経常収益計（受取助成金等）-その他の事業 **/
-        var ordinalyIncomeSubsidyOthers: Long,
+        var ordinaryIncomeSubsidyOthers: Long? = null,
         /** 活動計画書 経常収益計（受取助成金等）-合計 **/
-        var ordinalyIncomeSubsidyTotal: Long,
+        var ordinaryIncomeSubsidyTotal: Long? = null,
         /** 活動計画書 経常収益計（事業収益）-特定非営利活動に係る事業 **/
-        var ordinalyIncomeBusinessMain: Long,
+        var ordinaryIncomeBusinessMain: Long? = null,
         /** 活動計画書 経常収益計（事業収益）-その他の事業 **/
-        var ordinalyIncomeBusinessOthers: Long,
+        var ordinaryIncomeBusinessOthers: Long? = null,
         /** 活動計画書 経常収益計（事業収益）-合計 **/
-        var ordinalyIncomeBusinessTotal: Long,
+        var ordinaryIncomeBusinessTotal: Long? = null,
         /** 活動計画書 経常収益計（その他収益）-特定非営利活動に係る事業 **/
-        var ordinalyIncomeOthersMain: Long,
+        var ordinaryIncomeOthersMain: Long? = null,
         /** 活動計画書 経常収益計（その他収益）-その他の事業 **/
-        var ordinalyIncomeOthersOthers: Long,
+        var ordinaryIncomeOthersOthers: Long? = null,
         /** 活動計画書 経常収益計（その他収益）-合計 **/
-        var ordinalyIncomeOthersTotal: Long,
+        var ordinaryIncomeOthersTotal: Long? = null,
 
         /** 活動計画書 経常費用計-特定非営利活動に係る事業 **/
-        var ordinalyExpenseMain: Long,
+        var ordinaryExpenseMain: Long? = null,
         /** 活動計画書 経常費用計-その他の事業 **/
-        var ordinalyExpenseOthers: Long,
+        var ordinaryExpenseOthers: Long? = null,
         /** 活動計画書 経常費用計-合計 **/
-        var ordinalyExpenseTotal: Long,
+        var ordinaryExpenseTotal: Long? = null,
         /** 活動計画書 経常費用計（事業費）-特定非営利活動に係る事業 **/
-        var ordinalyExpenseOperationMain: Long,
+        var ordinaryExpenseOperationMain: Long? = null,
         /** 活動計画書 経常費用計（事業費）-その他の事業 **/
-        var ordinalyExpenseOperationOthers: Long,
+        var ordinaryExpenseOperationOthers: Long? = null,
         /** 活動計画書 経常費用計（事業費）-合計 **/
-        var ordinalyExpenseOperationTotal: Long,
+        var ordinaryExpenseOperationTotal: Long? = null,
         /** 活動計画書 経常費用計（事業費 (1)人件費）-特定非営利活動に係る事業 **/
-        var ordinalyExpenseOperationPersonalMain: Long,
+        var ordinaryExpenseOperationPersonalMain: Long? = null,
         /** 活動計画書 経常費用計（事業費 (1)人件費）-その他の事業 **/
-        var ordinalyExpenseOperationPersonalOthers: Long,
+        var ordinaryExpenseOperationPersonalOthers: Long? = null,
         /** 活動計画書 経常費用計（事業費 (1)人件費）-合計 **/
-        var ordinalyExpenseOperationPersonalTotal: Long,
+        var ordinaryExpenseOperationPersonalTotal: Long? = null,
         /** 活動計画書 経常費用計（事業費 (2)その他経費）-特定非営利活動に係る事業 **/
-        var ordinalyExpenseOperationOthersMain: Long,
+        var ordinaryExpenseOperationOthersMain: Long? = null,
         /** 活動計画書 経常費用計（事業費 (2)その他経費）-その他の事業 **/
-        var ordinalyExpenseOperationOthersOthers: Long,
+        var ordinaryExpenseOperationOthersOthers: Long? = null,
         /** 活動計画書 経常費用計（事業費 (2)その他経費）-合計 **/
-        var ordinalyExpenseOperationOthersTotal: Long,
+        var ordinaryExpenseOperationOthersTotal: Long? = null,
         /** 活動計画書 経常費用計（管理費）-特定非営利活動に係る事業 **/
-        var ordinalyExpenseAdministrativeMain: Long,
+        var ordinaryExpenseAdministrativeMain: Long? = null,
         /** 活動計画書 経常費用計（管理費）-その他の事業 **/
-        var ordinalyExpenseAdministrativeOthers: Long,
+        var ordinaryExpenseAdministrativeOthers: Long? = null,
         /** 活動計画書 経常費用計（管理費）-合計 **/
-        var ordinalyExpenseAdministrativeTotal: Long,
+        var ordinaryExpenseAdministrativeTotal: Long? = null,
         /** 活動計画書 経常費用計（管理費 (1)人件費）-特定非営利活動に係る事業 **/
-        var ordinalyExpenseAdministrativePersonalMain: Long,
+        var ordinaryExpenseAdministrativePersonalMain: Long? = null,
         /** 活動計画書 経常費用計（管理費 (1)人件費）-その他の事業 **/
-        var ordinalyExpenseAdministrativePersonalOthers: Long,
+        var ordinaryExpenseAdministrativePersonalOthers: Long? = null,
         /** 活動計画書 経常費用計（管理費 (1)人件費）-合計 **/
-        var ordinalyExpenseAdministrativeTotalOthers: Long,
+        var ordinaryExpenseAdministrativeTotalOthers: Long? = null,
         /** 活動計画書 経常費用計（管理費 (2)その他経費）-特定非営利活動に係る事業 **/
-        var ordinalyExpenseAdministrativeOthersMain: Long,
+        var ordinaryExpenseAdministrativeOthersMain: Long? = null,
         /** 活動計画書 経常費用計（管理費 (2)その他経費）-その他の事業 **/
-        var ordinalyExpenseAdministrativeOthersOthers: Long,
+        var ordinaryExpenseAdministrativeOthersOthers: Long? = null,
         /** 活動計画書 経常費用計（管理費 (2)その他経費）-合計 **/
-        var ordinalyExpenseAdministrativeOthersTotal: Long,
+        var ordinaryExpenseAdministrativeOthersTotal: Long? = null,
 
         /** 活動計画書 当期経常増減額-特定非営利活動に係る事業 **/
-        var ordinalRiseOrFallMain: Long,
+        var ordinalRiseOrFallMain: Long? = null,
         /** 活動計画書 当期経常増減額-その他の事業 **/
-        var ordinalRiseOrFallOthers: Long,
+        var ordinalRiseOrFallOthers: Long? = null,
         /** 活動計画書 当期経常増減額-合計 **/
-        var ordinalRiseOrFallTotal: Long,
+        var ordinalRiseOrFallTotal: Long? = null,
 
         /** 活動計画書 経常外収益計-特定非営利活動に係る事業 **/
-        var nonRecurringProfitMain: Long,
+        var nonRecurringProfitMain: Long? = null,
         /** 活動計画書 経常外収益計-その他の事業 **/
-        var nonRecurringProfitOthers: Long,
+        var nonRecurringProfitOthers: Long? = null,
         /** 活動計画書 経常外収益計-合計 **/
-        var nonRecurringProfitTotal: Long,
+        var nonRecurringProfitTotal: Long? = null,
 
         /** 活動計画書 経常外費用計-特定非営利活動に係る事業 **/
-        var nonRecurringExpenseMain: Long,
+        var nonRecurringExpenseMain: Long? = null,
         /** 活動計画書 経常外費用計-その他の事業 **/
-        var nonRecurringExpenseOthers: Long,
+        var nonRecurringExpenseOthers: Long? = null,
         /** 活動計画書 経常外費用計-合計 **/
-        var nonRecurringExpenseTotal: Long,
+        var nonRecurringExpenseTotal: Long? = null,
 
         /** 活動計画書 経理区分振替額-特定非営利活動に係る事業 **/
-        var accountingClassificationTransferAmountMain: Long,
+        var accountingClassificationTransferAmountMain: Long? = null,
         /** 活動計画書 経理区分振替額-その他の事業 **/
-        var accountingClassificationTransferAmountOthers: Long,
+        var accountingClassificationTransferAmountOthers: Long? = null,
         /** 活動計画書 経理区分振替額-合計 **/
-        var accountingClassificationTransferAmountTotal: Long,
+        var accountingClassificationTransferAmountTotal: Long? = null,
 
         /** 活動計画書 当期正味財産増減額-特定非営利活動に係る事業 **/
-        var netAssetRiseOrFallMainMain: Long,
+        var netAssetRiseOrFallMain: Long? = null,
         /** 活動計画書 当期正味財産増減額-その他の事業 **/
-        var netAssetRiseOrFallMainOthers: Long,
+        var netAssetRiseOrFallOthers: Long? = null,
         /** 活動計画書 当期正味財産増減額-合計 **/
-        var netAssetRiseOrFallMainTotal: Long,
+        var netAssetRiseOrFallTotal: Long? = null,
 
         /** 活動計画書 前期繰越正味財産額-特定非営利活動に係る事業 **/
-        var previousTermNetAssetMain: Long,
+        var previousTermNetAssetMain: Long? = null,
         /** 活動計画書 前期繰越正味財産額-その他の事業 **/
-        var previousTermNetAssetOthers: Long,
+        var previousTermNetAssetOthers: Long? = null,
         /** 活動計画書 前期繰越正味財産額-合計 **/
-        var previousTermNetAssetTotal: Long,
+        var previousTermNetAssetTotal: Long? = null,
 
         /** 活動計画書 次期繰越正味財産額-特定非営利活動に係る事業 **/
-        var nextTermNetAssetMain: Long,
+        var nextTermNetAssetMain: Long? = null,
         /** 活動計画書 次期繰越正味財産額-その他の事業 **/
-        var nextTermNetAssetOthers: Long,
+        var nextTermNetAssetOthers: Long? = null,
         /** 活動計画書 次期繰越正味財産額-合計 **/
-        var nextTermNetAssetTotal: Long,
+        var nextTermNetAssetTotal: Long? = null,
 
 
         /** 貸借対照表 時点 **/
-        var bsTime: Date,
+        var bsTime: Date? = null,
         /** 貸借対照表 資産の部（流動資産） **/
-        var bsCurrentAssets: Long,
+        var bsCurrentAssets: Long? = null,
         /** 貸借対照表 資産の部（固定資産） **/
-        var bsFixedAssets: Long,
+        var bsFixedAssets: Long? = null,
         /** 貸借対照表 資産の部（資産合計） **/
-        var bsTotalAssets: Long,
+        var bsTotalAssets: Long? = null,
         /** 貸借対照表 負債の部（流動負債） **/
-        var bsCurrentDebt: Long,
+        var bsCurrentDebt: Long? = null,
         /** 貸借対照表 負債の部（固定負債） **/
-        var bsFixedDebt: Long,
+        var bsFixedDebt: Long? = null,
         /** 貸借対照表 負債の部（負債合計） **/
-        var bsTotalDebt: Long,
+        var bsTotalDebt: Long? = null,
         /** 貸借対照表 正味財産の部（前期繰越正味財産） **/
-        var bsPreviousTermNetAsset: Long,
+        var bsPreviousTermNetAsset: Long? = null,
         /** 貸借対照表 正味財産の部（当期繰越正味財産） **/
-        var bsCurrentTermNetAsset: Long,
+        var bsCurrentTermNetAsset: Long? = null,
         /** 貸借対照表 正味財産の部（正味財産合計） **/
-        var bsTotalNetAsset: Long,
+        var bsTotalNetAsset: Long? = null,
         /** 貸借対照表 負債及び正味財産合計 **/
-        var bsTotalAmount: Long,
+        var bsTotalAmount: Long? = null,
 
         /** 準拠している会計基準１ **/
-        var conformingAccountingStandards1: Int,
+        var conformingAccountingStandards1: Int? = null,
         /** 準拠している会計基準２ **/
-        var conformingAccountingStandards2: Int,
+        var conformingAccountingStandards2: Int? = null,
         /** 準拠している会計基準３ **/
-        var conformingAccountingStandards3: Int,
+        var conformingAccountingStandards3: Int? = null,
+
+        // TODO これ以下はヘッダーしかないっぽくカンマすらない(MacのNumbersのcountaで確認)
         /** 準拠している会計基準４ **/
-        var conformingAccountingStandards4: Int,
+        var conformingAccountingStandards4: Int? = null,
         /** 準拠している会計基準５ **/
-        var conformingAccountingStandards5: Int,
+        var conformingAccountingStandards5: Int? = null,
         /** 準拠している会計基準（その他） **/
-        var conformingAccountingStandardsOthers: Int,
+        var conformingAccountingStandardsOthers: Int? = null,
 
 
         /** 監査の実施１ **/
-        var auditConduction1: String,
+        var auditConduction1: String? = null,
         /** 監査の実施２ **/
-        var auditConduction2: String,
+        var auditConduction2: String? = null,
         /** 監査の実施３ **/
-        var auditConduction3: String
-)
+        var auditConduction3: String? = null
+) {
+    companion object {
+        val csvHeader = Arrays.stream(RawCorporateInput::class.java.declaredFields)
+                .map { t: Field -> t.name }
+                .filter { s ->
+                    !arrayOf(
+                            "id",
+                            "csvHeader",
+                            "Companion"
+                    ).contains(s)
+                }
+                .collect(Collectors.toList())
+                .toTypedArray()
+    }
+}
+
