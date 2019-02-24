@@ -9,8 +9,8 @@ import org.springframework.batch.item.ItemProcessor
 class AdministrativeItemProcessor : ItemProcessor<RawAdministrativeInput, RawAdministrativeInput> {
     private val log: Logger = LoggerFactory.getLogger(ScheduledTasks::class.java)
     override fun process(item: RawAdministrativeInput): RawAdministrativeInput? {
-        log.info("AdministrativeItemProcessor")
-        log.info(item.toString())
+//        log.info("AdministrativeItemProcessor")
+//        log.info(item.toString())
         return item
     }
 }

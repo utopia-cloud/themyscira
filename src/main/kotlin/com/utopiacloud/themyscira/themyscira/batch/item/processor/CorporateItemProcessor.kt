@@ -9,8 +9,8 @@ import org.springframework.batch.item.ItemProcessor
 class CorporateItemProcessor : ItemProcessor<RawCorporateInput, RawCorporateInput> {
     private val log: Logger = LoggerFactory.getLogger(ScheduledTasks::class.java)
     override fun process(item: RawCorporateInput): RawCorporateInput? {
-        log.info("CorporateItemProcessor")
-        log.info(item.toString())
+//        log.info("CorporateItemProcessor")
+//        log.info(item.toString())
         return item
     }
 }

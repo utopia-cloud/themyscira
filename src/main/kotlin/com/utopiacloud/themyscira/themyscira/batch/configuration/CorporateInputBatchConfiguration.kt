@@ -17,6 +17,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.item.file.FlatFileItemReader
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper
+import org.springframework.batch.item.file.separator.DefaultRecordSeparatorPolicy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -86,6 +87,7 @@ class CorporateInputConfiguration {
                 .resource(FileSystemResource("downloads/000_CorporateInputData_20190220.csv"))
                 .encoding("Shift_JIS")
                 .linesToSkip(1)
+                .recordSeparatorPolicy(DefaultRecordSeparatorPolicy())
                 .delimited()
                 .names(RawCorporateInput.csvHeader)
                 .fieldSetMapper(object : BeanWrapperFieldSetMapper<RawCorporateInput>() {

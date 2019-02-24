@@ -22,12 +22,14 @@ class RawAdministrativeInput(
         /** 主たる事務所の所在地 **/
         var address: String? = null,
         /** 従たる事務所の所在地 **/
+        @Lob // 複数住所が改行されて入っているパターンがある
         var addressSub: String? = null,
         /** 代表者氏名 **/
         var representative: String? = null,
         /** 法人設立認証年月日 **/
         var establishedDate: String? = null,
         /** 定款に記載された目的 **/
+        @Lob
         var purpose: String? = null,
         /** 活動分野１ **/
         var sector1: String? = null,
@@ -98,8 +100,10 @@ class RawAdministrativeInput(
         /** 認定（特例認定取消日） **/
         var approvedSpacialCancelledDate: String? = null,
         /** 監督情報 **/
+        @Lob
         var aboutSupervision: String? = null,
         /** 解散情報 **/
+        @Lob
         var aboutDissolution: String? = null,
         /** 法人情報URL **/
         var url: String? = null,

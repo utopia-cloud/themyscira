@@ -1,10 +1,9 @@
 package com.utopiacloud.themyscira.themyscira.batch.configuration
 
 import com.utopiacloud.themyscira.themyscira.application.NpoPortalService
-import com.utopiacloud.themyscira.themyscira.batch.item.file.mapping.RawAdministrativeInputFieldSetMapper
 import com.utopiacloud.themyscira.themyscira.batch.item.processor.AdministrativeItemProcessor
-import com.utopiacloud.themyscira.themyscira.batch.item.writer.ConsoleItemWriter
 import com.utopiacloud.themyscira.themyscira.batch.listener.RawAdministrativeInputReadListener
+import com.utopiacloud.themyscira.themyscira.batch.listener.RawAdministrativeInputWriteListener
 import com.utopiacloud.themyscira.themyscira.domain.entity.RawAdministrativeInput
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
@@ -15,23 +14,31 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer
 import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy
 import org.springframework.batch.core.step.tasklet.MethodInvokingTaskletAdapter
 import org.springframework.batch.core.step.tasklet.Tasklet
+import org.springframework.batch.item.database.JpaItemWriter
+import org.springframework.batch.item.database.builder.JpaItemWriterBuilder
 import org.springframework.batch.item.file.FlatFileItemReader
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper
+import org.springframework.batch.item.file.separator.DefaultRecordSeparatorPolicy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.FileSystemResource
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 
 @Configuration
 @EnableBatchProcessing
-class AdministrativeInputBatchConfiguration{
+class AdministrativeInputBatchConfiguration {
     @Autowired
     lateinit var jobBuilderFactory: JobBuilderFactory
 
     @Autowired
     lateinit var stepBuilderFactory: StepBuilderFactory
+
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
 
     @Autowired
     lateinit var npoPortalService: NpoPortalService
@@ -67,7 +74,8 @@ class AdministrativeInputBatchConfiguration{
     @Bean
     fun readCsvAdministrativeStep(
             rawAdministrativeInputReadListener: RawAdministrativeInputReadListener,
-            administrativeCsvWriter: ConsoleItemWriter<RawAdministrativeInput>
+            rawAdministrativeInputWriteListener: RawAdministrativeInputWriteListener,
+            administrativeCsvWriter: JpaItemWriter<RawAdministrativeInput>
     ): Step {
         return stepBuilderFactory.get("readCsvAdministrativeStep")
                 .chunk<RawAdministrativeInput, RawAdministrativeInput>(10)
@@ -75,6 +83,7 @@ class AdministrativeInputBatchConfiguration{
                 .skipPolicy(AlwaysSkipItemSkipPolicy())
                 .reader(administrativeCsvReader())
                 .listener(rawAdministrativeInputReadListener)
+                .listener(rawAdministrativeInputWriteListener)
                 .processor(administrativeItemProcessor())
                 .writer(administrativeCsvWriter)
                 .build()
@@ -87,6 +96,7 @@ class AdministrativeInputBatchConfiguration{
                 .resource(FileSystemResource("downloads/000_AdministrativeInputData_20190223.csv"))
                 .encoding("Shift_JIS")
                 .linesToSkip(1)
+                .recordSeparatorPolicy(DefaultRecordSeparatorPolicy())
                 .delimited()
                 .names(RawAdministrativeInput.csvHeader)
                 .fieldSetMapper(object : BeanWrapperFieldSetMapper<RawAdministrativeInput>() {
@@ -103,8 +113,10 @@ class AdministrativeInputBatchConfiguration{
     }
 
     @Bean
-    fun administrativeCsvWriter(): ConsoleItemWriter<RawAdministrativeInput> {
-        return ConsoleItemWriter()
+    fun administrativeCsvWriter(): JpaItemWriter<RawAdministrativeInput> {
+        return JpaItemWriterBuilder<RawAdministrativeInput>()
+                .entityManagerFactory(entityManager.entityManagerFactory)
+                .build()
     }
 }
 
